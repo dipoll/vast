@@ -6,6 +6,7 @@ import "encoding/xml"
 // VAST response or by custom trackers.
 type Extension struct {
 	Type           string     `xml:"type,attr,omitempty"`
+	Attributes     []xml.Attr `xml:",attr,omitempty"`
 	CustomTracking []Tracking `xml:"CustomTracking>Tracking,omitempty"`
 	Data           []byte     `xml:",innerxml"`
 }
@@ -14,8 +15,9 @@ type Extension struct {
 type extension Extension
 
 type extensionNoCT struct {
-	Type string `xml:"type,attr,omitempty"`
-	Data []byte `xml:",innerxml"`
+	Type       string     `xml:"type,attr,omitempty"`
+	Attributes []xml.Attr `xml:",attr,omitempty"`
+	Data       []byte     `xml:",innerxml"`
 }
 
 // MarshalXML implements xml.Marshaler interface.
@@ -26,9 +28,9 @@ func (e Extension) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
 	// if we have custom trackers, we should ignore the data, if not, then we
 	// should consider only the data.
 	if len(e.CustomTracking) > 0 {
-		e2 = extension{Type: e.Type, CustomTracking: e.CustomTracking}
+		e2 = extension{Type: e.Type, Attributes: e.Attributes, CustomTracking: e.CustomTracking}
 	} else {
-		e2 = extensionNoCT{Type: e.Type, Data: e.Data}
+		e2 = extensionNoCT{Type: e.Type, Attributes: e.Attributes, Data: e.Data}
 	}
 
 	return enc.EncodeElement(e2, start)
@@ -45,6 +47,11 @@ func (e *Extension) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error
 	// copy the type and the customTracking
 	e.Type = e2.Type
 	e.CustomTracking = e2.CustomTracking
+	for _, attr := range start.Attr {
+		if attr.Name.Local != "type" {
+			e.Attributes = append(e.Attributes, attr)
+		}
+	}
 	// copy the data only of customTracking is empty
 	if len(e.CustomTracking) == 0 {
 		e.Data = e2.Data

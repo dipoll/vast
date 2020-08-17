@@ -10,6 +10,7 @@ import (
 var (
 	extensionCustomTracking = []byte(`<Extension type="testCustomTracking"><CustomTracking><Tracking event="event.1"><![CDATA[http://event.1]]></Tracking><Tracking event="event.2"><![CDATA[http://event.2]]></Tracking></CustomTracking></Extension>`)
 	extensionData           = []byte(`<Extension type="testCustomTracking"><SkippableAdType>Generic</SkippableAdType></Extension>`)
+	extensionCustomAttr     = []byte(`<Extension type="testCustomAttr" someAttr="someValue"></Extension>`)
 )
 
 func TestExtensionCustomTrackingMarshal(t *testing.T) {
@@ -76,4 +77,23 @@ func TestExtensionGeneric(t *testing.T) {
 
 	// assert the resulting marshaled extension
 	assert.Equal(t, string(extensionData), string(xmlExtensionOutput))
+}
+
+func TestExtensionCustomAttribute(t *testing.T) {
+	// unmarshal the Extension
+	var e Extension
+	assert.NoError(t, xml.Unmarshal(extensionCustomAttr, &e))
+
+	// assert the resulting extension
+	if assert.Len(t, e.Attributes, 1) {
+		assert.Equal(t, "someAttr", e.Attributes[0].Name.Local)
+		assert.Equal(t, "someValue", e.Attributes[0].Value)
+	}
+
+	// marshal the extension
+	xmlExtensionOutput, err := xml.Marshal(e)
+	assert.NoError(t, err)
+
+	// assert the resulting marshaled extension
+	assert.Equal(t, string(extensionCustomAttr), string(xmlExtensionOutput))
 }
