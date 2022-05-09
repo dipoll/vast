@@ -247,6 +247,26 @@ func TestInlineLinearDurationUndefined(t *testing.T) {
 	}
 }
 
+func TestCategory(t *testing.T) {
+	v, _, _, err := loadFixture("testdata/vast_category.xml")
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	assert.Equal(t, "4.2", v.Version)
+	if assert.Len(t, v.Ads, 1) {
+		ad := v.Ads[0]
+		if assert.NotNil(t, ad.InLine) {
+			inline := ad.InLine
+			if assert.Len(t, inline.Categories, 3) {
+				category := inline.Categories[0]
+				assert.Equal(t, "https://www.iabtechlab.com/categoryauthority", category.Authority)
+				assert.Equal(t, "American Cuisine", category.Value)
+			}
+		}
+	}
+}
+
 func TestInlineNonLinear(t *testing.T) {
 	v, _, _, err := loadFixture("testdata/vast_inline_nonlinear.xml")
 	if !assert.NoError(t, err) {

@@ -70,10 +70,21 @@ type InLine struct {
 	// A URI representing an error-tracking pixel; this element can occur multiple
 	// times.
 	Errors []CDATAString `xml:"Error,omitempty"`
+	// Category used in creative separation and for compliance in certain programs,
+	// a category field is needed to categorize the ad’s content.
+	Categories []Category `xml:"Category,omitempty"`
 	// Provides a value that represents a price that can be used by real-time bidding
 	// (RTB) systems. VAST is not designed to handle RTB since other methods exist,
 	// but this element is offered for custom solutions if needed.
 	Pricing *Pricing `xml:",omitempty"`
+	// AdServingId the purpose of this id is to greatly reduce the amount of work
+	// required to compare impression-level data across multiple systems, which is otherwise
+	// done by passing proprietary IDs across different systems and matching them.
+	AdServingId string `xml:",omitempty"`
+	// The number of seconds in which the ad is valid for execution. In cases where the ad is
+	// requested ahead of time, this timing indicates how many seconds after the request that the
+	// ad expires and cannot be played.
+	Expires uint64 `xml:",omitempty"`
 	// XML node for custom extensions, as defined by the ad server. When used, a
 	// custom element should be nested under <Extensions> to help separate custom
 	// XML elements from VAST elements. The following example includes a custom
@@ -102,6 +113,14 @@ type Pricing struct {
 	// a VAST Wrapper in a chain of Wrappers, only the value offered in the first
 	// Wrapper need be considered.
 	Value string `xml:",cdata"`
+}
+
+// Category used in creative separation and for compliance in certain programs,
+// a category field is needed to categorize the ad’s content.
+//
+type Category struct {
+	Authority string `xml:"authority,attr"`
+	Value     string `xml:",cdata"`
 }
 
 // Wrapper element contains a URI reference to a vendor ad server (often called
