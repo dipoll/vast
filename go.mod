@@ -1,4 +1,4 @@
-module github.com/iflix/vast
+module github.com/dipoll/vast
 
 go 1.14
 
