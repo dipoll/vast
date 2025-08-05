@@ -657,3 +657,22 @@ func TestUniversalAdID(t *testing.T) {
 		}
 	}
 }
+
+func TestVast42Mezzanine(t *testing.T) {
+	v, _, _, err := loadFixture("testdata/mezzanine.xml")
+	if !assert.NoError(t, err) {
+		return
+	}
+
+	assert.Equal(t, "4.0", v.Version)
+	if assert.Len(t, v.Ads, 1) {
+		ad := v.Ads[0]
+		if assert.NotNil(t, ad.InLine) {
+			if assert.NotNil(t, ad.InLine.Extensions) {
+				if assert.Len(t, ad.InLine.Creatives, 1) {
+					assert.Len(t, ad.InLine.Creatives[0].Linear.Mezzanines, 1)
+				}
+			}
+		}
+	}
+}
