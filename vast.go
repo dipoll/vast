@@ -117,7 +117,6 @@ type Pricing struct {
 
 // Category used in creative separation and for compliance in certain programs,
 // a category field is needed to categorize the ad’s content.
-//
 type Category struct {
 	Authority string `xml:"authority,attr"`
 	Value     string `xml:",cdata"`
@@ -262,6 +261,7 @@ type Linear struct {
 	TrackingEvents []Tracking   `xml:"TrackingEvents>Tracking,omitempty"`
 	VideoClicks    *VideoClicks `xml:",omitempty"`
 	MediaFiles     []MediaFile  `xml:"MediaFiles>MediaFile,omitempty"`
+	Mezzanines     []Mezzanine  `xml:"MediaFiles>Mezzanine,omitempty"`
 }
 
 // LinearWrapper defines a wrapped linear creative
@@ -536,6 +536,24 @@ type MediaFile struct {
 	// placed in key/value pairs on the asset request).
 	APIFramework string `xml:"apiFramework,attr,omitempty"`
 	URI          string `xml:",cdata"`
+}
+
+type Mezzanine struct {
+	// Method of delivery of ad (either "streaming" or "progressive")
+	Delivery string `xml:"delivery,attr"`
+	// Pixel dimensions of video.
+	Width int `xml:"width,attr"`
+	// Pixel dimensions of video.
+	Height int `xml:"height,attr"`
+	// The codec used to produce the media file.
+	Codec    string `xml:"codec,attr,omitempty"`
+	FileSize int    `xml:"fileSize,attr,omitempty"`
+	// MIME type. Popular MIME types include, but are not limited to
+	// “video/x-ms-wmv” for Windows Media, and “video/x-flv” for Flash
+	// Video. Image ads or interactive ads can be included in the
+	// MediaFiles section with appropriate Mime types
+	Type string `xml:"type,attr"`
+	URI  string `xml:",cdata"`
 }
 
 // UniversalAdID describes a VAST 4.x universal ad id.
