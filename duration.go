@@ -26,6 +26,11 @@ func (dur Duration) MarshalText() ([]byte, error) {
 func (dur *Duration) UnmarshalText(data []byte) (err error) {
 	s := string(data)
 	s = strings.TrimSpace(s)
+	// Found a case when we need to trim all spaces even inside value (bad xml)
+	s = strings.ReplaceAll(s, " ", "")
+	s = strings.ReplaceAll(s, "\t", "")
+	s = strings.ReplaceAll(s, "\n", "")
+	s = strings.ReplaceAll(s, "\r", "")
 	if s == "" || strings.ToLower(s) == "undefined" {
 		*dur = 0
 		return nil

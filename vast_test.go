@@ -2,6 +2,7 @@ package vast
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -21,6 +22,9 @@ func loadFixture(path string) (*VAST, string, string, error) {
 
 	var v VAST
 	err = xml.Unmarshal(b, &v)
+	if err != nil {
+		return nil, "", "", err
+	}
 
 	res, err := xml.MarshalIndent(v, "", "  ")
 	if err != nil {
@@ -671,6 +675,21 @@ func TestVast42Mezzanine(t *testing.T) {
 			if assert.NotNil(t, ad.InLine.Extensions) {
 				if assert.Len(t, ad.InLine.Creatives, 1) {
 					assert.Len(t, ad.InLine.Creatives[0].Linear.Mezzanines, 1)
+				}
+			}
+		}
+	}
+}
+
+func TestBadInput(t *testing.T) {
+	v, _, _, err := loadFixture("testdata/vst.formated.xml")
+	assert.NoError(t, err)
+	for _, ad := range v.Ads {
+		for _, c := range ad.InLine.Creatives {
+			if c.Linear != nil {
+				fmt.Printf("Duration is => %d\n", c.Linear.Duration)
+				if time.Duration(c.Linear.Duration).Seconds() != 15 {
+					t.Fatal("duration should not be less than 1 second")
 				}
 			}
 		}
