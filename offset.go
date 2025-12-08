@@ -31,7 +31,13 @@ func (o *Offset) UnmarshalText(data []byte) error {
 		}
 		o.Percent = float32(p) / 100
 		return nil
+	} else if !strings.Contains(string(data), ":") {
+		// We go in malformed format so we do not know what
+		// provider means percents or timeline
+		o.Percent = 0
+		return nil
 	}
+
 	var d Duration
 	o.Duration = &d
 	return o.Duration.UnmarshalText(data)
