@@ -33,8 +33,13 @@ func (o *Offset) UnmarshalText(data []byte) error {
 		return nil
 	} else if !strings.Contains(string(data), ":") {
 		// We go in malformed format so we do not know what
-		// provider means percents or timeline
-		o.Percent = 0
+		// provider mean. We treat it as percentage by default.
+		p, err := strconv.ParseInt(string(data), 10, 8)
+		if err != nil {
+			o.Percent = 0.0
+			return nil
+		}
+		o.Percent = float32(p) / 100
 		return nil
 	}
 
