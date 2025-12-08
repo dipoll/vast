@@ -2,7 +2,6 @@ package vast
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -687,9 +686,8 @@ func TestBadInput(t *testing.T) {
 	for _, ad := range v.Ads {
 		for _, c := range ad.InLine.Creatives {
 			if c.Linear != nil {
-				fmt.Printf("Duration is => %d\n", c.Linear.Duration)
 				if time.Duration(c.Linear.Duration).Seconds() != 15 {
-					t.Fatal("duration should not be less than 1 second")
+					t.Fatal("duration should be 15 second")
 				}
 			}
 		}

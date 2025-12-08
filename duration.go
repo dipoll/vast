@@ -31,7 +31,7 @@ func (dur *Duration) UnmarshalText(data []byte) (err error) {
 	s = strings.ReplaceAll(s, "\t", "")
 	s = strings.ReplaceAll(s, "\n", "")
 	s = strings.ReplaceAll(s, "\r", "")
-	if s == "" || strings.ToLower(s) == "undefined" {
+	if s == "" || s == "0" || strings.ToLower(s) == "undefined" {
 		*dur = 0
 		return nil
 	}
