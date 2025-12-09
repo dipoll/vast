@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Offset represents either a vast.Duration or a percentage of the video duration.
@@ -39,7 +40,9 @@ func (o *Offset) UnmarshalText(data []byte) error {
 			o.Percent = 0.0
 			return nil
 		}
-		o.Percent = float32(p) / 100
+
+		d := Duration(time.Duration(p) * time.Second)
+		o.Duration = &d
 		return nil
 	}
 
